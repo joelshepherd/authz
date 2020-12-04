@@ -9,6 +9,11 @@ No dependencies, 100% test coverage.
 ### Creating an authoriser
 
 ```ts
+import {
+  and,
+  create,
+} from "https://raw.githubusercontent.com/joelshepherd/authz/main/mod.ts";
+
 const authoriser = create({
   action: {
     read: () => true,
