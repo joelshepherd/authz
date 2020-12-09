@@ -37,11 +37,11 @@ if (authoriser(context, "write")) {
 }
 
 if (authoriser(context, "write", object)) {
-  // User can perform write on this object
+  // user can perform write on this object
 }
 
 if (authoriser(context, "write", object, "name")) {
-  // User can perform write on this object's name field
+  // user can perform write on this object's name field
 }
 ```
 

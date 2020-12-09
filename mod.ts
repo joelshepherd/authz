@@ -1,5 +1,25 @@
-export interface Rule<C, T> {
+export interface Rule<C, T = void> {
+  /**
+   * A rule to check authorisation.
+   */
   (context: C, root: T): boolean;
+}
+
+export interface Authoriser<C, A extends string, T> {
+  /**
+   * Authorise a user's actions.
+   *
+   *
+   *    // user can perform write
+   *    authoriser(context, "write")
+   *
+   *    // user can perform write on this object
+   *    authoriser(context, "write", object)
+   *
+   *    // user can perform write on this object's name field
+   *    authoriser(context, "write", object, "name")
+   */
+  (context: C, action: A, object?: T, field?: keyof T): boolean;
 }
 
 interface Options<C, A extends string, T> {
@@ -18,13 +38,6 @@ interface Options<C, A extends string, T> {
   };
 }
 
-interface Authoriser<C, A extends string, T> {
-  // TypeScript doesn't like this with the types for `bind`
-  // (context: C, action: A): boolean;
-  // (context: C, action: A, object: T): boolean;
-  (context: C, action: A, object?: T, field?: keyof T): boolean;
-}
-
 /**
  * Create a new authoriser with the specified rules.
  */
@@ -41,7 +54,7 @@ export function create<C, A extends string, T>(
 
   function _field(context: C, action: A, root: T, field: keyof T): boolean {
     if (opts.fields && field in opts.fields) {
-      let resolver = opts.fields[field]; // why do I need to do this ts?
+      let resolver = opts.fields[field];
       if (typeof resolver === "object") {
         resolver = resolver[action];
         if (resolver) {
@@ -54,12 +67,7 @@ export function create<C, A extends string, T>(
     return _object(context, action, root);
   }
 
-  return function authoriser(
-    context: C,
-    action: A,
-    object?: T,
-    field?: keyof T
-  ): boolean {
+  return function authoriser(context, action, object, field): boolean {
     if (object && field) return _field(context, action, object, field);
     if (object) return _object(context, action, object);
     return _action(context, action);
