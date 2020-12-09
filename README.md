@@ -12,7 +12,7 @@ No dependencies, 100% test coverage.
 import {
   and,
   create,
-} from "https://raw.githubusercontent.com/joelshepherd/authz/main/mod.ts";
+} from "https://raw.githubusercontent.com/joelshepherd/authz/0.1.0/mod.ts";
 
 const authoriser = create({
   action: {
